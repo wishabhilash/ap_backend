@@ -1,0 +1,1 @@
+var rdb = require('rethinkdb');
