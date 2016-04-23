@@ -1,13 +1,17 @@
 'use strict';
 let config = require('../config.js');
 let UserServiceClass = require(config.baseDir + '/services/user.js');
-let userValidator = require(config.baseDir + '/validators/user.js');
+// let userValidator = require(config.baseDir + '/validators/user.js');
 let parse = require('co-body');
 let UserService = new UserServiceClass();
 
 module.exports = {
 	getById: function * (next){
-		this.body = "this is great";
+		if (!this.params.id) {
+			this.status = 403;
+			this.body = "no user_id found.";
+		}
+		this.body = yield UserService.getById(this.params.id);
 		yield next;
 	},
 
@@ -16,15 +20,9 @@ module.exports = {
 		yield next;
 	},
 
-	addUser: function *(next) {
-		let a = yield parse.form(this);
-		console.log(a);
-		userValidator.userAddValidator(this);
-		if (this.errors) {
-			this.body = this.errors;
-			return;
-		}
-		this.body = this.params;
+	create: function *(next) {
+		let data = yield parse.form(this);
+		this.body = yield UserService.addUser(data);
 		yield next;
 	}
 }

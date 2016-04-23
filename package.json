@@ -24,6 +24,11 @@
     "koa-jwt": "^1.1.2",
     "koa-router": "^5.4.0",
     "koa-validate": "^0.2.11",
+    "lodash": "^4.11.1",
     "rethinkdb": "^2.3.0"
+  },
+  "devDependencies": {
+    "co-mocha": "^1.1.2",
+    "mocha": "^2.4.5"
   }
 }

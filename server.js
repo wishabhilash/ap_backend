@@ -4,7 +4,6 @@ const app = require('./app.js');
 let rdb = require('./dbConn.js');
 let config = require('./config.js');
 const jwt = require('koa-jwt');
-let validate = require('koa-validate')();
 app.unless = require('koa-unless');
 
 
@@ -23,13 +22,13 @@ app.use(function *(next){
 });
 
 app.use(rdb.createRdbConnection);
-app.use(validate);
 // app.use(jwt({secret: config.secretKey})).unless({path: [/^\/public/]})
 
 // Put all routes after using jwt
 let router = require('./routes.js')();
 app.use(router.routes());
 app.use(router.allowedMethods());
+
 
 app.use(rdb.closeRdbConnection);
 

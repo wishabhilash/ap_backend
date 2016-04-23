@@ -1,26 +1,35 @@
 'use strict';
 var config = require('../config.js');
 var BaseService = require(config.baseDir + '/lib/base/service.js');
-var UserClass = require('../repos/user.js');
+var UserRepo = require('../repos/user/user.js');
 
-var UserRepo = new UserClass();
 
 class UserService extends BaseService {
-	* getUserById(id) {
+	constructor(){
+		super();
+		this.userRepo = new UserRepo();
+	}
+
+	* getUserById(userId) {
 		try {
-			// return yield UserRepo.getById(id);
+			return yield this.userRepo.getById(userId);
 		} catch(err) {
-			
+			return yield response(err, 404);
 		}
-		
 	}
 
 	* getAllUsers() {
-		return yield UserRepo.getAll();
+		return yield this.userRepo.getAll();
 	}
 
-	* createUser(userData) {
+	* addUser(userData) {
+		let userRepo = new UserRepo(userData);
+		return yield userRepo.save();
+	}
 
+	* validateSignin(userData) {
+		let user = yield userRepo.getUserByEmail();
+		
 	}
 }
 

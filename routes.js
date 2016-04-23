@@ -1,13 +1,16 @@
 'use strict';
 
-let router = require('koa-router')();
+let Router = require('koa-router');
 let config = require('./config.js');
 let UserController = require(config.baseDir + "/controllers/user.js");
-// let koaBody = require('koa-body')();
+
+let router = new Router({
+	prefix: '/v1'
+});
 
 module.exports = () => {
-	router.get('/v1/user/:id', UserController.getById);
-	router.get('/v1/user', UserController.getAll);
-	router.post('/v1/user', UserController.addUser);
+	router.get('/user/:id', UserController.getById);
+	router.get('/user', UserController.getAll);
+	router.post('/user', UserController.create);
 	return router;	
 }
