@@ -1,7 +1,6 @@
 'use strict';
-var config = require('../config.js');
-var BaseService = require(config.baseDir + '/lib/base/service.js');
-var UserRepo = require('../repos/user/user.js');
+var BaseService = require('src/lib/base/service.js');
+var UserRepo = require('src/repos/user/repo');
 
 
 class UserService extends BaseService {

@@ -1,8 +1,10 @@
 'use strict';
 
-const app = require('./app.js');
-let rdb = require('./dbConn.js');
-let config = require('./config.js');
+require('app-module-path').addPath(__dirname + "/..");
+
+const app = require('src/app.js');
+let rdb = require('src/dbConn.js');
+let config = require('src/config.js');
 const jwt = require('koa-jwt');
 app.unless = require('koa-unless');
 

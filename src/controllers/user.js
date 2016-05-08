@@ -1,9 +1,6 @@
 'use strict';
-let config = require('../config.js');
-let UserServiceClass = require(config.baseDir + '/services/user.js');
-// let userValidator = require(config.baseDir + '/validators/user.js');
+let UserService = new (require('src/services/UserService'))();
 let parse = require('co-body');
-let UserService = new UserServiceClass();
 
 module.exports = {
 	getById: function * (next){

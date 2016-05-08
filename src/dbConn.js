@@ -1,8 +1,8 @@
 'use strict';
 
 var r = require('rethinkdb');
-var config = require('./config.js');
-var app = require(config.baseDir + '/app.js');
+var config = require('src/config.js');
+var app = require('src/app.js');
 
 function* createRdbConnection(next) {
     try{
@@ -10,7 +10,7 @@ function* createRdbConnection(next) {
         app.context.rdbConn = conn;
     }
     catch(err) {
-        
+        console.log("error", err);
         this.status = 500;
         this.body = err.message || http.STATUS_CODES[this.status];
     }

@@ -5,7 +5,7 @@ var r = require('rethinkdb');
 var app = require(config.baseDir + '/app.js');
 let _ = require('lodash');
 
-class User {
+class UserRepo {
 	constructor(data) {
 		this._data = data;
 		this._table = "users";
@@ -47,7 +47,8 @@ class User {
 
 	* getById(userId) {
 		try {
-			var cursor = yield r.table(this._table).get(userId).run(app.context.rdbConn);
+			var cursor = yield r.table(this._table)
+				.get(userId).run(app.context.rdbConn);
 			return yield cursor.toArray();
 		} catch(err) {
 			throw err;
@@ -56,7 +57,8 @@ class User {
 
 	* getByEmail(userEmail) {
 		try {
-			var cursor = yield r.table(this._table).filter({email: userId.email}).run(app.context.rdbConn);
+			var cursor = yield r.table(this._table)
+				.filter({email: userId.email}).run(app.context.rdbConn);
 			return yield cursor.toArray();
 		} catch(err) {
 			throw err;
@@ -65,4 +67,4 @@ class User {
 
 }
 
-module.exports = User;
+module.exports = UserRepo;
