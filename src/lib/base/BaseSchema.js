@@ -10,6 +10,8 @@ class BaseSchema {
 		// Set the properties
 		this.setProperties(props);
 
+		// Schema this._schema must be defined in the child classes
+		this._schema = null;
 
 		// Define the conditions
 		this._conditions = {
@@ -40,13 +42,19 @@ class BaseSchema {
 				type: (arg) => 'getDate' in Object.getPrototypeOf(arg),
 			}
 		};
-
-		// Schema this._schema must be defined in the child classes
-		this._schema = {};
+		
 	}
 
 	setProperties(props) {
 		this.props = props || {};
+	}
+
+	updateProperties(props) {
+		this.props = _.assign(this.props, props);
+	}
+
+	* getProperties() {
+		return yield this.props;
 	}
 
 	setSchema(schema) {

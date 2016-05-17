@@ -1,6 +1,18 @@
 'use strict';
 
+let config = require('src/config.js');
+let r = require('rethinkdb');
+let app = require('src/app.js');
 let _ = require('lodash');
+let BaseSchema = require('src/lib/base/BaseSchema');
+
+
+class Schema extends BaseSchema {
+	constructor(data) {
+		super();
+		this.setSchema(data);
+	}
+}
 
 class BaseRepo {
 
@@ -9,22 +21,44 @@ class BaseRepo {
 		this._table = null;
 	}
 
+	createSchema(schema) {
+		this._schema = new Schema(data);
+	}
+
 	* create(data) {
 		if (!this.schema) throw new Error('Schema not defined.');
 		this._schema.setProperties(data);
 	}
 
 	* update(data) {
-
+		if (!this._schema) throw new Error('Schema not defined.');
+		this._schema.updateProperties(data);
 	}
 
 	* save() {
-		this._data.last_modified = new Date();
-		if (this._data.id) {
+		let data = null;
+		// Check if this._schema exists
+		if (!this._schema) throw new Error('Schema not defined.');
+
+		// Test validity of data
+		let dataIsValid = yield this._schema.isValid();
+
+		// If data is valid then get the data to save
+		if (dataIsValid) data = yield this._schema.getProperties();
+		
+		// Update last_modified flag with current time
+		data.last_modified = new Date();
+
+		// Check if table name exists
+		if (!this._table) throw Error('Table name not provided');
+
+		// If id exists in data, then update it
+		// else insert new data
+		if (id in data) {
 			try {
 				var result = yield r.table(this._table)
-					.get(this._data.id)
-					.update(this._data, {returnChanges: true})
+					.get(data.id)
+					.update(data, {returnChanges: true})
 					.run(app.context.rdbConn);
 				return yield result.changes[0].new_val;
 			} catch(err) {
@@ -33,7 +67,7 @@ class BaseRepo {
 		} else {
 			try {
 				var result = yield r.table(this._table)
-					.insert(this._data, {returnChanges: true})
+					.insert(data, {returnChanges: true})
 					.run(app.context.rdbConn);
 				return yield result.changes[0].new_val;
 			} catch(err) {
