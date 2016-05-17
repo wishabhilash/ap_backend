@@ -13,7 +13,7 @@ module.exports = {
 	},
 
 	getAll: function * (next) {
-		this.body = yield UserService.getAllUsers();
+		this.body = yield UserService.getAll();
 		yield next;
 	},
 

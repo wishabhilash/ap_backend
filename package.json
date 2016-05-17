@@ -4,7 +4,7 @@
   "description": "poetry coomunity",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "find ./tests -name '*Spec.js' | xargs mocha -R spec"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,9 @@
   "homepage": "https://github.com/wishabhilash/ap_backend#readme",
   "dependencies": {
     "app-module-path": "^1.0.6",
+    "bcrypt": "^0.8.6",
     "co": "^4.6.0",
+    "co-bcrypt": "^1.0.0",
     "co-body": "^4.0.0",
     "koa": "^1.2.0",
     "koa-body": "^1.4.0",
@@ -26,7 +28,9 @@
     "koa-router": "^5.4.0",
     "koa-validate": "^0.2.11",
     "lodash": "^4.11.1",
-    "rethinkdb": "^2.3.0"
+    "node-gyp": "^3.3.1",
+    "rethinkdb": "^2.3.0",
+    "uuid-validate": "0.0.2"
   },
   "devDependencies": {
     "co-mocha": "^1.1.2",

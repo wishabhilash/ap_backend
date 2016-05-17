@@ -1,39 +1,39 @@
 'use strict';
 
-var config = require('../../config.js');
+var config = require('src/config.js');
 var r = require('rethinkdb');
-var app = require(config.baseDir + '/app.js');
+var app = require('src/app.js');
 let _ = require('lodash');
+let BaseSchema = require('src/lib/base/BaseSchema');
+let BaseRepo = require('src/lib/base/BaseRepo');
+let bcrypt = require('co-bcrypt');
 
-class UserRepo {
+class Schema extends BaseSchema {
+	constructor() {
+		super();
+		this.setSchema({
+			first_name: {'type': 'string', 'maxLen': 50},
+			last_name: {'type': 'string', 'maxLen': 50},
+			email: {'type': 'email'},
+			password_hash: {'type': 'string'}
+		});
+	}
+}
+
+class UserRepo extends BaseRepo {
 	constructor(data) {
-		this._data = data;
+		super();
 		this._table = "users";
+		this._schema = new Schema(data);
 	}
 
-	* save() {
-		this._data.last_modified = new Date();
-		if (this._data.id) {
-			try {
-				var result = yield r.table(this._table)
-					.get(this._data.id)
-					.update(this._data, {returnChanges: true})
-					.run(app.context.rdbConn);
-				return yield result.changes[0].new_val;
-			} catch(err) {
-				throw err;
-			}
-		} else {
-			try {
-				var result = yield r.table(this._table)
-					.insert(this._data, {returnChanges: true})
-					.run(app.context.rdbConn);
-				return yield result.changes[0].new_val;
-			} catch(err) {
-				throw err;
-			}
-		}
-		
+	
+	* setPassword(password) {
+		let salt = yield bcrypt.genSalt(10);
+		let hash = yield bcrypt.hash(password, salt);
+		this.update({
+			password_hash: hash
+		})
 	}
 
 	* getAll() {

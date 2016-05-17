@@ -1,6 +1,6 @@
 'use strict';
-var BaseService = require('src/lib/base/service.js');
-var UserRepo = require('src/repos/user/repo');
+var BaseService = require('src/lib/base/service');
+var UserRepo = require('src/repos/UserRepo');
 
 
 class UserService extends BaseService {
@@ -9,7 +9,7 @@ class UserService extends BaseService {
 		this.userRepo = new UserRepo();
 	}
 
-	* getUserById(userId) {
+	* getById(userId) {
 		try {
 			return yield this.userRepo.getById(userId);
 		} catch(err) {
@@ -17,7 +17,7 @@ class UserService extends BaseService {
 		}
 	}
 
-	* getAllUsers() {
+	* getAll() {
 		return yield this.userRepo.getAll();
 	}
 
@@ -26,8 +26,16 @@ class UserService extends BaseService {
 		return yield userRepo.save();
 	}
 
-	* validateSignin(userData) {
+	* signin(userData) {
 		let user = yield userRepo.getUserByEmail();
+		
+	}
+
+	* setPassword() {
+
+	}
+
+	* generateHash() {
 		
 	}
 }
