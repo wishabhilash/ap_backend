@@ -46,6 +46,13 @@ class BaseSchema {
 	}
 
 	setProperties(props) {
+		props = props || {};
+		if (!('id' in props)) {
+			props['id'] = null;
+		}
+		if (!('last_modified' in props)) {
+			props['last_modified'] = Date.now();
+		}
 		this.props = props || {};
 	}
 

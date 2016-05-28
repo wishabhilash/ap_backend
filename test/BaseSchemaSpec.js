@@ -39,6 +39,20 @@ describe('BaseSchema testing', function() {
 		assert.equal(_.size(defaultSchema), _.size(baseSchema._schema));
 	});
 
+	it('schema size must pass', function *() {
+		let args = {
+			id: "s",
+			name: 's',
+			age: 2,
+			cgp: 1.2,
+			admin: false
+		};
+		let baseSchema = new BaseSchema(args);
+		baseSchema.setSchema(defaultSchema);
+		let m = yield baseSchema._checkSchemaSize();
+		assert(m[0]);
+	});
+
 	it('validate method must return true', function * () {
 		let args = {
 			id: "s",

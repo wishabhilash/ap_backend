@@ -1,16 +1,14 @@
 'use strict';
 
-var config = require('src/config.js');
+var config = require('src/config');
 var r = require('rethinkdb');
 var app = require('src/app.js');
 let _ = require('lodash');
 let BaseRepo = require('src/lib/base/BaseRepo');
-let bcrypt = require('co-bcrypt');
-
 
 class UserRepo extends BaseRepo {
-	constructor(data) {
-		super();
+	constructor(props) {
+		super(props);
 		this._table = "users";
 		
 		// Create the schema
@@ -21,14 +19,6 @@ class UserRepo extends BaseRepo {
 			password_hash: {'type': 'string'}
 		};
 		this.createSchema(schema);
-	}
-
-	* setPassword(password) {
-		let salt = yield bcrypt.genSalt(10);
-		let hash = yield bcrypt.hash(password, salt);
-		this.update({
-			password_hash: hash
-		})
 	}
 
 	* getAll() {

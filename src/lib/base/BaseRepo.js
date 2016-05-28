@@ -9,20 +9,20 @@ let BaseSchema = require('src/lib/base/BaseSchema');
 
 class Schema extends BaseSchema {
 	constructor(data) {
-		super();
-		this.setSchema(data);
+		super(data);
 	}
 }
 
 class BaseRepo {
 
-	constructor(data) {
-		this._schema = null;
+	constructor(props) {
+		props = props || {};
+		this._schema = new Schema(props);
 		this._table = null;
 	}
 
 	createSchema(schema) {
-		this._schema = new Schema(data);
+		this._schema.setSchema(schema);
 	}
 
 	* create(data) {
@@ -33,6 +33,10 @@ class BaseRepo {
 	* update(data) {
 		if (!this._schema) throw new Error('Schema not defined.');
 		this._schema.updateProperties(data);
+	}
+
+	* getProperties() {
+		return yield this._schema.getProperties();
 	}
 
 	* save() {
@@ -78,3 +82,5 @@ class BaseRepo {
 	}
 
 }
+
+module.exports = BaseRepo;

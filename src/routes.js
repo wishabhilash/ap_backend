@@ -1,7 +1,7 @@
 'use strict';
 
 let Router = require('koa-router');
-let UserController = require("src/controllers/user.js");
+let UserController = require("src/controllers/UserController");
 
 let router = new Router({
 	prefix: '/v1'

@@ -1,7 +1,8 @@
 'use strict';
+
 var BaseService = require('src/lib/base/service');
 var UserRepo = require('src/repos/UserRepo');
-
+let bcrypt = require('co-bcrypt');
 
 class UserService extends BaseService {
 	constructor(){
@@ -32,7 +33,11 @@ class UserService extends BaseService {
 	}
 
 	* setPassword() {
-
+		let salt = yield bcrypt.genSalt(10);
+		let hash = yield bcrypt.hash(password, salt);
+		userRepo.update({
+			password_hash: hash
+		});
 	}
 
 	* generateHash() {
