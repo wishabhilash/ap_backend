@@ -26,13 +26,16 @@ class BaseRepo {
 	}
 
 	* create(data) {
-		if (!this.schema) throw new Error('Schema not defined.');
+		console.log(data);
+		if (!this._schema) throw new Error('Schema not defined.');
 		this._schema.setProperties(data);
+		return yield [];
 	}
 
 	* update(data) {
 		if (!this._schema) throw new Error('Schema not defined.');
 		this._schema.updateProperties(data);
+		return yield [];
 	}
 
 	* getProperties() {
@@ -48,37 +51,50 @@ class BaseRepo {
 		let dataIsValid = yield this._schema.isValid();
 
 		// If data is valid then get the data to save
-		if (dataIsValid) data = yield this._schema.getProperties();
+		if (dataIsValid[0]) data = yield this.getProperties();
 		
 		// Update last_modified flag with current time
 		data.last_modified = new Date();
 
 		// Check if table name exists
 		if (!this._table) throw Error('Table name not provided');
-
+		
 		// If id exists in data, then update it
 		// else insert new data
-		if (id in data) {
+		let result = null;
+		if ('id' in data && data['id']) {
 			try {
-				var result = yield r.table(this._table)
+				result = yield r.table(this._table)
 					.get(data.id)
 					.update(data, {returnChanges: true})
-					.run(app.context.rdbConn);
-				return yield result.changes[0].new_val;
+					.run(app.context.rdbConn);				
 			} catch(err) {
 				throw err;
 			}
 		} else {
+			if ('id' in data) delete data['id'];
 			try {
-				var result = yield r.table(this._table)
+				result = yield r.table(this._table)
 					.insert(data, {returnChanges: true})
 					.run(app.context.rdbConn);
-				return yield result.changes[0].new_val;
 			} catch(err) {
 				throw err;
 			}
 		}
-		
+		return yield result.changes[0].new_val;
+	}
+
+	// Used only for testing cleanup
+	* _remove(id) {
+		if (!id) return yield [false];
+		try {
+			yield r.table(this._table)
+				.get(id).delete()
+				.run(app.context.rdbConn);
+		} catch(err) {
+			throw err;
+		}
+		return yield [true];
 	}
 
 }

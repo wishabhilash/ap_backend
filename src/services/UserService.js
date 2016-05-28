@@ -1,6 +1,6 @@
 'use strict';
 
-var BaseService = require('src/lib/base/service');
+var BaseService = require('src/lib/base/BaseService');
 var UserRepo = require('src/repos/UserRepo');
 let bcrypt = require('co-bcrypt');
 
@@ -14,7 +14,7 @@ class UserService extends BaseService {
 		try {
 			return yield this.userRepo.getById(userId);
 		} catch(err) {
-			return yield response(err, 404);
+			return yield response(err.message, 404);
 		}
 	}
 

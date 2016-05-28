@@ -76,10 +76,10 @@ class BaseSchema {
 
 	* isValid() {
 		let _allAreValid = true;
-		// Call methods starting with _check
+		// Call methods starting with _validate
 		let _protos = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
 		for(var item in _protos) {
-			if (_protos[item].startsWith('_check')) {
+			if (_protos[item].startsWith('_validate')) {
 				let a = yield this[_protos[item]]();
 				if (!a[0]) _allAreValid = false;
 			}
@@ -87,11 +87,7 @@ class BaseSchema {
 		return [_allAreValid];
 	}
 
-	* _checkSchemaSize() {
-		return yield [_.size(this._schema) == _.size(this.props)];
-	}
-
-	* _checkSchemaKeys() {
+	* _validateSchemaKeys() {
 		let valid = true;
 		let func = function(value, key) {
 			if (!(key in this._schema)) valid = false;
@@ -101,7 +97,7 @@ class BaseSchema {
 		return yield [valid];
 	}
 
-	* _checkSchemaConditions() {
+	* _validateSchemaConditions() {
 		let valid = true;
 		let func = function(value, key) {
 			if (!(key in this._schema)) valid = false;
