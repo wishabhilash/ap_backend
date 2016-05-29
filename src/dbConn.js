@@ -19,7 +19,6 @@ function* createRdbConnection(next) {
 
 function * closeRdbConnection () {
     app.context.rdbConn.close();
-    // console.log(app.context.rdbConn, 'connection closed...');
 }
 
 module.exports = {

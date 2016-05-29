@@ -38,6 +38,28 @@ class BaseRepo {
 		return yield [];
 	}
 
+	* getOne(id) {
+		let result = null;
+		try {
+			result = yield r.table(this._table).get(id).run(app.context.rdbConn);
+		} catch (err) {
+			throw err;
+		}
+		return yield result;
+	}
+
+	// Lazy delete. Sets is_active as false
+	* delete(id) {
+		try {
+			let result = yield this.getOne(id);
+			let data = "";
+			result.is_active = false;
+		} catch (err) {
+			throw err;
+		}
+		return yield result;
+	}
+
 	* getProperties() {
 		return yield this._schema.getProperties();
 	}
@@ -84,7 +106,7 @@ class BaseRepo {
 		return yield result.changes[0].new_val;
 	}
 
-	// Used only for testing cleanup
+	// Hard delete: Used only for testing cleanup
 	* _remove(id) {
 		if (!id) return yield [false];
 		try {

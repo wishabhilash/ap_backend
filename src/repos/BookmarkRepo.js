@@ -6,15 +6,14 @@ var app = require('src/app');
 let _ = require('lodash');
 let BaseRepo = require('src/lib/base/BaseRepo');
 
-class ContentRepo extends BaseRepo {
+class BookmarkRepo extends BaseRepo {
 	constructor(props) {
 		super(props);
-		this._table = "content";
+		this._table = "bookmarks";
 
 		let schema = {
-			content: {'type': 'string', 'required': true},
-			title: {'type': 'string', 'required': true},
-			user_id: {'type': 'uuid', 'required': true}
+			user_id: {'type': 'uuid'},
+			content_id: {'type': 'uuid'}
 		}
 
 		this.createSchema(schema);
@@ -27,10 +26,6 @@ class ContentRepo extends BaseRepo {
 		} catch(err) {
 			throw err;
 		}
-	}
-
-	* getById() {
-		
 	}
 }
 

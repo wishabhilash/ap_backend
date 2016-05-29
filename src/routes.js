@@ -9,11 +9,17 @@ let router = new Router({
 });
 
 module.exports = () => {
-	router.get('/user/:id', UserController.getById);
-	router.get('/user', UserController.getAll);
-	router.post('/user', UserController.create);
+	router.get('/users/:id', UserController.getById);
+	router.get('/users', UserController.getAll);
+	router.post('/users', UserController.create);
 
-	router.post('/content', ContentController.create);
-	router.get('/content', ContentController.getAll);
+	router.post('/contents', ContentController.create);
+	router.get('/contents', ContentController.getAll);
+	router.get('/contents/:id', ContentController.getOne);
+
+	router.post('/bookmarks', ContentController.bookmark);
+	router.get('/bookmarks', ContentController.getAll);
+	router.get('/bookmarks/:id', ContentController.getOne);
+	router.delete('/bookmarks/:id', ContentController.unbookmark);
 	return router;
 }

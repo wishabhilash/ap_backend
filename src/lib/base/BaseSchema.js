@@ -12,7 +12,7 @@ class BaseSchema {
 
 		// Schema this._schema must be defined in the child classes
 		this._schema = null;
-
+		
 		// Define the conditions
 		this._conditions = {
 			'string': {
@@ -21,13 +21,26 @@ class BaseSchema {
 				default: (arg) => arg || ''
 			},
 			'int': {
-				type: (arg) => typeof arg === 'number' && Number.isInteger(arg)
+				type: function(arg) {
+					if (arg != null)
+						return typeof arg === 'number' && Number.isInteger(arg);
+					else
+						return true;
+				},
+				default: (arg) => arg || null
 			},
 			'float': {
-				type: (arg) => typeof arg === 'number' && !Number.isInteger(arg)
+				type: function(arg) {
+					if (arg != null)
+						return typeof arg === 'number' && !Number.isInteger(arg);
+					else
+						return true;
+				},
+				default: (arg) => arg || null
 			},
 			'uuid': {
-				type: (arg) => uuidValidate(arg, 4)
+				type: (arg) => uuidValidate(arg, 4),
+				default: (arg) => arg || null
 			},
 			'bool': {
 				type: (arg) => typeof arg === 'boolean'
@@ -36,10 +49,11 @@ class BaseSchema {
 				type: function(arg) {
 					var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     				return re.test(arg);
-				} 
+				}
 			},
 			'datetime': {
 				type: (arg) => 'getDate' in Object.getPrototypeOf(arg),
+				default: (arg) => arg || null
 			}
 		};
 		
@@ -71,6 +85,10 @@ class BaseSchema {
 		if (!('last_modified' in schema)) {
 			schema['last_modified'] = {'type': 'uuid'};
 		}
+		if (!('is_active' in schema)) {
+			schema['is_active'] = {'type': 'bool', 'default': true};
+		}
+
 		this._schema = schema;
 	}
 
@@ -97,13 +115,30 @@ class BaseSchema {
 		return yield [valid];
 	}
 
-	* _validateSchemaConditions() {
-		let valid = true;
-		let func = function(value, key) {
-			if (!(key in this._schema)) valid = false;
+	* __validateSchemaConditions() {
+		// TO BE IMPLEMENTED
+		let valid = true, propKey = null, propValue = null;
+
+		let conditionLoop = function(func, key) {
+			console.log(key, func, propValue);
+			// if (!func(propValue)) {
+			// 	throw Error('Invalid condition: "' + key + 
+			// 		'" of ' + propKey + ' is invalid in ' + );
+			// }
 		}
-		_.forEach(this.props, func.bind(this));
-		if (!valid) throw new Error('Invalid schema');
+		
+		let schemaLoop = function(value, key) {
+			let condition = this._conditions[value];
+			// console.log(key, value, func, this._conditions);
+			_.forEach(condition, conditionLoop);
+		}
+
+		let propLoop = function(propValue, propKey) {
+			let schema = this._schema[propKey];
+			_.forEach(schema, schemaLoop.bind(this));
+		}
+		_.forEach(this.props, propLoop.bind(this));
+
 		return yield [valid];
 	}
 

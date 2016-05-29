@@ -21,6 +21,11 @@ class ContentService extends BaseService {
 		return yield this.contentRepo.getAll();
 	}
 
+	* getOne(id) {
+		let result = yield this.contentRepo.getOne(id);
+		return yield result;
+	}
+
 	* create(data) {
 		try {
 			yield this.contentRepo.create(data);

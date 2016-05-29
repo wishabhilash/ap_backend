@@ -9,6 +9,11 @@ module.exports = {
 		yield next;
 	},
 
+	getOne: function *(next) {
+		this.body = yield ContentService.getOne(this.params.id);
+		yield next;
+	},
+
 	getAll: function *(next) {
 		this.body = yield ContentService.getAll();
 		yield next;
