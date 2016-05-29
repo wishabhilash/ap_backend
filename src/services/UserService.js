@@ -3,6 +3,9 @@
 var BaseService = require('src/lib/base/BaseService');
 var UserRepo = require('src/repos/UserRepo');
 let bcrypt = require('co-bcrypt');
+let jwt = require('koa-jwt');
+let config = require('src/config');
+
 
 class UserService extends BaseService {
 	constructor(){
@@ -27,9 +30,14 @@ class UserService extends BaseService {
 		return yield userRepo.save();
 	}
 
-	* signin(userData) {
-		let user = yield userRepo.getUserByEmail();
-		
+	* login(userData) {
+		// let user = yield userRepo.getUserByEmail();
+		let token = jwt.sign({foo: 'bar'}, config.secretKey);
+		return yield this.response({token: token});
+	}
+
+	* register(data) {
+
 	}
 
 	* setPassword() {

@@ -2,10 +2,10 @@
 
 require('app-module-path').addPath(__dirname + "/..");
 
-const app = require('src/app.js');
+let app = require('src/app.js');
 let rdb = require('src/dbConn.js');
 let config = require('src/config.js');
-const jwt = require('koa-jwt');
+let jwt = require('koa-jwt');
 app.unless = require('koa-unless');
 
 
@@ -24,10 +24,10 @@ app.use(function *(next){
 });
 
 app.use(rdb.createRdbConnection);
-// app.use(jwt({secret: config.secretKey})).unless({path: [/^\/public/]})
+app.use(jwt({secret: config.secretKey}).unless({path: [/^\/v1\/open/]}));
 
 // Put all routes after using jwt
-let router = require('./routes.js')();
+let router = require('src/routes');
 app.use(router.routes());
 app.use(router.allowedMethods());
 

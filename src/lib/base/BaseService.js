@@ -5,6 +5,7 @@ class BaseService {
 		return {
 			'data': data,
 			'status': status || 200,
+			'timestamp': Math.floor(Date.now()/1000)
 		}
 	}
 }

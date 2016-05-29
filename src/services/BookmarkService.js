@@ -39,4 +39,4 @@ class BookmarkService extends BaseService {
 	}
 }
 
-module.exports = ContentService
+module.exports = BookmarkService

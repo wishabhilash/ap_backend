@@ -11,25 +11,28 @@ class ContentService extends BaseService {
 
 	* getById(id) {
 		try {
-			return yield this.contentRepo.getById(id);
+			let result = yield this.contentRepo.getById(id);
+			return yield this.response(result);
 		} catch(err) {
 			return yield response(err.message, 404);
 		}
 	}
 
 	* getAll() {
-		return yield this.contentRepo.getAll();
+		let result =  yield this.contentRepo.getAll();
+		return yield this.response(result);
 	}
 
 	* getOne(id) {
 		let result = yield this.contentRepo.getOne(id);
-		return yield result;
+		return yield this.response(result);
 	}
 
 	* create(data) {
 		try {
 			yield this.contentRepo.create(data);
-			return yield this.contentRepo.save();
+			let result = yield this.contentRepo.save();
+			return yield this.response(result);
 		} catch(err) {
 			return yield this.response(err.message, 404);
 		}

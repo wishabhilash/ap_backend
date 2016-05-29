@@ -9,16 +9,20 @@ module.exports = {
 		yield next;
 	},
 
+	getOne: function *(next) {
+
+	},
+
 	getAll: function *(next) {
 		this.body = yield BookmarkService.getAll();
 		yield next;
-	}
+	},
 
 	bookmark: function *(next) {
 		let data = yield parse.form(this);
 		this.body = yield BookmarkService.add(data);
 		yield next;
-	}
+	},
 
 	unbookmark: function *(next) {
 		this.body = yield BookmarkService.remove(this.params.id);

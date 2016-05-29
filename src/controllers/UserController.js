@@ -17,9 +17,15 @@ module.exports = {
 		yield next;
 	},
 
-	create: function *(next) {
+	register: function *(next) {
 		let data = yield parse.form(this);
-		this.body = yield UserService.addUser(data);
+		this.body = yield UserService.register(data);
 		yield next;
+	},
+
+	login: function *(next) {
+		let data = yield parse.form(this);
+		// TO DO SIGN IN LOGIC
+		this.body = yield UserService.login(data);
 	}
 }

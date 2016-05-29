@@ -29,4 +29,4 @@ class BookmarkRepo extends BaseRepo {
 	}
 }
 
-module.exports = ContentRepo;
+module.exports = BookmarkRepo;
