@@ -30,24 +30,35 @@ class UserRepo extends BaseRepo {
 		}
 	}
 
-	* getById(userId) {
+	* getById(id) {
 		try {
 			var cursor = yield r.table(this._table)
-				.get(userId).run(app.context.rdbConn);
+				.get(id).run(app.context.rdbConn);
 			return yield cursor.toArray();
 		} catch(err) {
 			throw err;
 		}
 	}
 
-	* getByEmail(userEmail) {
+	* getByEmail(email) {
+		let cursor = null;
 		try {
-			var cursor = yield r.table(this._table)
-				.filter({email: userId.email}).run(app.context.rdbConn);
-			return yield cursor.toArray();
+			cursor = yield r.table(this._table)
+				.filter({email: email}).run(app.context.rdbConn);
+			
 		} catch(err) {
 			throw err;
 		}
+		return yield cursor.toArray();
+	}
+
+	* instantiate(data) {
+		delete data['password'];
+		let dataList = [];
+		_.forEach(data, function(value, key) {
+			dataList.push(new UserRepo(value));
+		});
+		return yield dataList;
 	}
 
 }

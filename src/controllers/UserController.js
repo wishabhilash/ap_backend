@@ -25,7 +25,7 @@ module.exports = {
 
 	login: function *(next) {
 		let data = yield parse.form(this);
-		// TO DO SIGN IN LOGIC
 		this.body = yield UserService.login(data);
+		yield next;
 	}
 }

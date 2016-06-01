@@ -71,6 +71,10 @@ class BaseSchema {
 	}
 
 	updateProperties(props) {
+		// Check if any prop key is missing
+		for(let key in props) {
+			if (!(key in this.props)) throw new Error('Invalid key request');
+		}
 		this.props = _.assign(this.props, props);
 	}
 

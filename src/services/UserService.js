@@ -25,32 +25,65 @@ class UserService extends BaseService {
 		return yield this.userRepo.getAll();
 	}
 
-	* addUser(userData) {
-		let userRepo = new UserRepo(userData);
+	* addUser(data) {
+		let userRepo = new UserRepo(data);
 		return yield userRepo.save();
 	}
 
-	* login(userData) {
-		// let user = yield userRepo.getUserByEmail();
+	* login(data) {
+		let users = yield this.userRepo.getByEmail(data['email']);
+		if (!users.length) {
+			return this.response('Invalid user', 403);
+		}
+		let user = users[0];
+		// Create salt to match
+
+		let salt = yield bcrypt.genSalt(10);
+		let comparison = yield bcrypt.compare(data['password'], user.password);
+
+		if (comparison) {
+			let token = jwt.sign({foo: 'bar'}, config.secretKey);
+			return yield this.response({token: token});
+		} else {
+			return yield this.response({error: 'Authentication failure'}, 401);
+		}
+		
+	}
+
+	* register(data) {
+		if (!('password' in data && 'email' in data))
+			return yield this.response({error: 'Invalid parameters'}, 403);
+
+		let user = yield this.userRepo.getByEmail(data['email']);
+		if (user.length) {
+			return yield this.response({error: 'User already exists'}, 403);
+		}
+		
+		// Get password hash
+		data['password'] = yield this._generateHash(data['password']);
+
+		user = new UserRepo(data);
+		try {
+			yield user.save();
+		} catch (err) {
+			return yield response(err.message, 404);
+		}
 		let token = jwt.sign({foo: 'bar'}, config.secretKey);
 		return yield this.response({token: token});
 	}
 
-	* register(data) {
-
-	}
-
-	* setPassword() {
-		let salt = yield bcrypt.genSalt(10);
-		let hash = yield bcrypt.hash(password, salt);
+	* setPassword(password) {
+		let hash = yield this._generateHash(password);
 		userRepo.update({
 			password_hash: hash
 		});
 	}
 
-	* generateHash() {
-		
+	* _generateHash(password) {
+		let salt = yield bcrypt.genSalt(10);
+		return yield bcrypt.hash(password, salt);
 	}
+
 }
 
 module.exports = UserService

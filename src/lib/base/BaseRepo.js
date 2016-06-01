@@ -34,8 +34,12 @@ class BaseRepo {
 
 	* update(data) {
 		if (!this._schema) throw new Error('Schema not defined.');
-		this._schema.updateProperties(data);
-		return yield [];
+		try {
+			this._schema.updateProperties(data);
+		} catch (err) {
+			throw err;
+		}
+		return yield function(){return true}();
 	}
 
 	* getOne(id) {
